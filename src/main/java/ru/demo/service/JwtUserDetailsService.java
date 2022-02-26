@@ -1,26 +1,31 @@
 package ru.demo.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.demo.model.MyUserPrincipal;
-import ru.demo.model.User;
-import ru.demo.repository.UserRepository;
+import ru.demo.model.DAOUser;
+import ru.demo.repository.UserDao;
+
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userDao;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        DAOUser user = (DAOUser) userDao.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return new MyUserPrincipal(user);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                new ArrayList<>());
     }
+
 }
