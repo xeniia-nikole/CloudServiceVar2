@@ -1,4 +1,4 @@
-package ru.demo.configJwt;
+package ru.demo.cloudConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.demo.configJwt.JwtAuthenticationEntryPoint;
+import ru.demo.configJwt.JwtRequestFilter;
 
 import java.util.List;
 
@@ -36,11 +38,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/login");
-    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -65,11 +62,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors();
-        // We don't need CSRF for this example
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and()
+                // We don't need CSRF for this example
+                .csrf()
+                .disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers(HttpMethod.GET,"/login").permitAll().
+                .authorizeRequests().antMatchers("/login").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -85,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

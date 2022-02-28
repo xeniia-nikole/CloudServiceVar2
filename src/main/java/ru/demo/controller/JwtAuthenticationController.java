@@ -7,14 +7,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.demo.configJwt.JwtTokenUtil;
-import ru.demo.model.JwtRequest;
 import ru.demo.model.JwtResponse;
+import ru.demo.model.JwtResponse;
+import ru.demo.model.UserDTO;
 import ru.demo.service.JwtUserDetailsService;
 
 
@@ -31,13 +28,14 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        System.out.println("Пришёл клиент с login/password - " + authenticationRequest.getUsername() + "/"  + authenticationRequest.getPassword());
+    @RequestMapping(value = "/login")
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody UserDTO userDTO) throws Exception {
 
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        System.out.println("Пришёл клиент с login/password - " + userDTO.getLogin() + "/"  + userDTO.getPassword());
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        authenticate(userDTO.getLogin(), userDTO.getPassword());
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(userDTO.getLogin());
         System.out.println("User Details: " + userDetails);
 
         final String token = jwtTokenUtil.generateToken(userDetails);
