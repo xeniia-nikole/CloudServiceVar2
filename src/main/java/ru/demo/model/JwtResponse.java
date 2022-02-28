@@ -8,7 +8,7 @@ public class JwtResponse implements Serializable {
     private static final long serialVersionUID = -8091879091924046844L;
 
     @JsonProperty("auth-token")
-    private final String authToken;
+    public final String authToken;
 
     public JwtResponse(String authToken) {
         this.authToken = authToken;
