@@ -6,5 +6,5 @@ import ru.demo.model.DAOUser;
 
 @Repository
 public interface UserDao extends CrudRepository<DAOUser, Long> {
-    UserDao findByUsername(String username);
+    DAOUser findByUsername(String username);
 }

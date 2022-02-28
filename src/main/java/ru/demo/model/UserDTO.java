@@ -1,5 +1,8 @@
 package ru.demo.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserDTO {
 
     public String username;
