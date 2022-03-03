@@ -16,7 +16,7 @@ public class FileControllerTest {
 
     @Autowired
     TestRestTemplate template1;
-    public static GenericContainer<?> app = new GenericContainer("app").withExposedPorts(29999);
+    public static GenericContainer<?> app = new GenericContainer("app").withExposedPorts(29990);
 
     @BeforeAll
     public static void setUp() {
